@@ -65,7 +65,7 @@ Let's start with the first step. Click on the tabs to find the right LM for you.
     
     def query_lm(messages):
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-5.1",
             messages=messages
         )
         return response.choices[0].message.content
@@ -88,34 +88,11 @@ Let's start with the first step. Click on the tabs to find the right LM for you.
     
     def query_lm(messages):
         response = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-4.5",
             max_tokens=4096,
             messages=messages
         )
         return response.content[0].text
-    ```
-
-=== "Google Gemini"
-
-    Install the Google Generative AI package:
-    ```bash
-    pip install google-generativeai
-    ```
-
-    Here's the minimal code to query the API:
-    ```python
-    import google.generativeai as genai
-    
-    genai.configure(
-        api_key="your-api-key-here"
-    )  # or set GOOGLE_API_KEY env var
-    model = genai.GenerativeModel('gemini-1.5-pro')
-    
-    def query_lm(messages):
-        # Convert messages to Gemini format
-        chat = model.start_chat(history=[])
-        response = chat.send_message(messages[-1]["content"])
-        return response.text
     ```
 
 === "OpenRouter"
@@ -155,7 +132,7 @@ Let's start with the first step. Click on the tabs to find the right LM for you.
     
     def query_lm(messages):
         response = completion(
-            model="gpt-4o",  # can be any provider: claude-3-5-sonnet, gemini/gemini-1.5-pro, etc.
+            model="openai/gpt-5.1",  # can be any provider + model
             messages=messages
         )
         return response.choices[0].message.content
