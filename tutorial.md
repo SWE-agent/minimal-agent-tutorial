@@ -50,15 +50,17 @@ while True:
 So to get this to work, we only need to implement two things:
 
 1. Querying the LM API (this can get annoying if you want to support all LMs, or want detailed cost information, but is very simple if you already know which model you want)
-2. Parsing the action (`parse_action`). You don't need that if you use tool calls instead (see below).
+2. Parsing the action (`parse_action`). You don't need this if you use the tool calling functionality of your LM if it supports it, but this is more provider-specific, so we won'nt cover it in this guide (don'tn worry, the performance should not be impacted by this).
 3. Executing the action (very simple)
+
+### Querying the LM
 
 
 Let's start with the first step. Click on the tabs to find the right LM for you.
 
 === "OpenAI"
 
-    Install the OpenAI package:
+    Install the [OpenAI package](https://pypi.org/project/openai/) ([docs](https://platform.openai.com/docs/api-reference)):
     ```bash
     pip install openai
     ```
@@ -81,7 +83,7 @@ Let's start with the first step. Click on the tabs to find the right LM for you.
 
 === "Anthropic"
 
-    Install the Anthropic package:
+    Install the [Anthropic package](https://pypi.org/project/anthropic/) ([docs](https://docs.anthropic.com/en/api)):
     ```bash
     pip install anthropic
     ```
@@ -105,7 +107,7 @@ Let's start with the first step. Click on the tabs to find the right LM for you.
 
 === "OpenRouter"
 
-    Install the OpenAI package (OpenRouter uses OpenAI-compatible API):
+    Install the [OpenAI package](https://pypi.org/project/openai/) ([OpenRouter docs](https://openrouter.ai/docs)) - OpenRouter uses OpenAI-compatible API:
     ```bash
     pip install openai
     ```
@@ -129,7 +131,7 @@ Let's start with the first step. Click on the tabs to find the right LM for you.
 
 === "LiteLLM"
 
-    Install the LiteLLM package (supports 100+ LLM providers):
+    Install the [LiteLLM package](https://pypi.org/project/litellm/) ([docs](https://docs.litellm.ai/)) - supports 100+ LLM providers:
     ```bash
     pip install litellm
     ```
@@ -148,7 +150,7 @@ Let's start with the first step. Click on the tabs to find the right LM for you.
 
 === "GLM"
 
-    Install the Zhipu AI package:
+    Install the [Zhipu AI package](https://pypi.org/project/zhipuai/) ([docs](https://open.bigmodel.cn/dev/api)):
     ```bash
     pip install zhipuai
     ```
@@ -209,15 +211,140 @@ Let's start with the first step. Click on the tabs to find the right LM for you.
     but they help your IDE or static checker (or even just yourself) to understand
     the inputs and outputs of the function.
 
+### Parse the action
+
+Let's parse the action. There's two simple ways in which the LM can "encode" the action (again, you don't need this if you use tool calls, but in this tutorial we'll keep it simpler):
+
+=== "Triple-backticks"
+
+    This is inspired by markdown codeblocks:
+
+        Some thoughts of the LM explaining the action and the action below
+
+        ```bash-action
+        cd /path/to/project && ls
+        ```
+
+=== "XML-style"
+
+    ```
+    Some thoughts of the LM explaining the action and the action below
+
+    <bash_action>cd /path/to/project && ls</bash_action>
+    ```
+
+For most models, either way works well and we recommend using triple backticks.
+However, some models (especially small or open source models) are slightly less general and you might try either.
+Here's a quick regular expression to parse the action:
+
+
+=== "Triple-backticks"
+    
+    ```python
+    import re
+    
+    def parse_action(lm_output: str) -> str:
+        """Take LM output, return action"""
+        matches = re.findall(
+            r"```bash-action\s*\n(.*?)\n```", 
+            lm_output, 
+            re.DOTALL
+        )
+        return matches[0].strip() if matches else ""
+    ```
+    
+    ??? example "Let's test it"
+        Here's a quick test to verify our parsing function works correctly:
+        
+        ````python
+        test_output = """I'll list the files in the current directory.
+
+        ```bash-action
+        ls -la
+        ```
+        """
+
+        print(parse_action(test_output))
+        ````
+
+=== "XML-style"
+    
+    ```python
+    import re
+    
+    def parse_action(lm_output: str) -> str:
+        """Take LM output, return action"""
+        matches = re.findall(
+            r"<bash_action>(.*?)</bash_action>", 
+            lm_output, 
+            re.DOTALL
+        )
+        return matches[0].strip() if matches else ""
+    ```
+    
+    ??? example "Let's test it"
+        Here's a quick test to verify our parsing function works correctly:
+        
+        ```python
+        test_output = """I'll list the files in the current directory.
+        
+        <bash_action>ls -la</bash_action>
+        """
+        
+        print(parse_action(test_output))
+        ```
+
+??? info "Understanding the regular expression"
+    
+    - `r"..."` - **Raw string**: The `r` prefix makes it a raw string, so backslashes are treated literally. Without it, you'd need to write `\\n` instead of `\n`, `\\s` instead of `\s`, etc.
+    - `(.*?)` - **Capturing group** with non-greedy matching: The parentheses `()` capture the content we want to extract. The `.*?` matches any characters, but `?` makes it stop at the first closing pattern (non-greedy) rather than the last.
+    - `re.DOTALL` flag - Makes `.` match newlines too, allowing multi-line commands to be captured.
+    
+    `findall` returns only what's inside the parentheses, not the surrounding markers.
+
+### Execute the action
+
 Now as for executing the action, it's actually very simple, we can just use python's `subprocess` module (or just `os.system`, though that's generally less recommended)
 
 ```python
-def execute_action(action: str) -> str:
-    """Execution action, return output"""
-    asdf
+import subprocess
+import os
+
+def execute_action(command: str) -> str:
+    """Execute action, return output"""
+    result = subprocess.run(
+        command,
+        shell=True,
+        text=True,
+        env=os.environ,
+        encoding="utf-8",
+        errors="replace",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    return result.stdout
 ```
 
+??? info "Understanding `subprocess.run arguments`"
+    Let's break down the keyword arguments we're using:
+    
+    - `shell=True` - Allows running arbitrary shell commands given as a string (like `cd`, `ls`, pipes, etc.). Be careful with untrusted input!
+    - `text=True` - Returns output as strings instead of bytes
+    - `env=os.environ` - Passes the current environment variables to the subprocess
+    - `encoding="utf-8"` - Specifies UTF-8 encoding for text output
+    - `errors="replace"` - Replaces invalid characters instead of raising errors
+    - `stdout=subprocess.PIPE` - Captures standard output
+    - `stderr=subprocess.STDOUT` - Redirects stderr to stdout (so we capture both in one stream)
+
 Let's put it together and run it!
+
+### Let's run it!
+
+You should now have code that looks something like this (this example uses litellm + triple backticks):
+
+```python
+
+```
 
 ## Let's make it more robust
 
