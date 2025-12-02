@@ -67,12 +67,14 @@ def build_site():
         extension_configs={
             "codehilite": {
                 "css_class": "highlight",
-                "linenums": False,
             },
+            # "pymdownx.superfences": {
+            #     "legacy_tab_classes": True,
+            # },
             "pymdownx.tabbed": {
                 "alternate_style": True,
             },
-        }
+        },
     )
     
     # Convert markdown to HTML

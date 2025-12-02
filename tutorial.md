@@ -8,9 +8,8 @@
   <p><strong>Contributions by</strong> <a href="#contribute">Contribute</a></p>
 </div>
 
-So you want to build your own AI agent? The good news: It's super simple, especially with more recent language models.
-
-This tutorial will walk you through the basics to get your own agent that follows an initial prompt and can use the terminal. It's not going to use any packages (other than to query a LM), so you'll understand the entire flow.
+So you want to build your own AI agent from scratch? The good news: It's super simple, especially with more recent language models.
+We won't be using any external packages (other than to query the LM), and our initial minimal agent is only some 60 lines long.
 
 And if you think this is too simplified and can never work in practice: Our [`mini` agent](https://mini-swe-agent.com) is built exactly the same (just with a bit more fluff to support more models be a bit more convenient) and it scores up to 74% on [SWE-bench verified](https://www.swebench.com/), only a few percent below highly optimized agents. 
 
@@ -29,12 +28,12 @@ Pseudocode:
 messages = [{"role": "user", "content": "Help me fix the ValueError in main.py"}]
 while True:
 	lm_output = query_lm(messages)
-	action = parse_action(lm_output)  # separate the action from output
-	output = execute_action(action)
-	print(lm_output["action"], "\n\n", output)
-	# Update the message history for the next round
 	messages.append({"role": .., lm_output)  # remember what was executed
-	messages.append({"role": ..., output)    # and the execution output
+	action = parse_action(lm_output)  # separate the action from output
+    if action == "exit":
+        break
+	output = execute_action(action)
+	messages.append({"role": ..., output)
 ```
 
 ??? info "What's up with the `role` field?"
@@ -50,7 +49,7 @@ while True:
 So to get this to work, we only need to implement two things:
 
 1. Querying the LM API (this can get annoying if you want to support all LMs, or want detailed cost information, but is very simple if you already know which model you want)
-2. Parsing the action (`parse_action`). You don't need this if you use the tool calling functionality of your LM if it supports it, but this is more provider-specific, so we won'nt cover it in this guide (don'tn worry, the performance should not be impacted by this).
+2. Parsing the action (`parse_action`). You don't need this if you use the tool calling functionality of your LM if it supports it, but this is more provider-specific, so we wo'nt cover it in this guide for now (don't worry, the performance should not be impacted by this).
 3. Executing the action (very simple)
 
 ### Querying the LM
@@ -211,6 +210,16 @@ Let's start with the first step. Click on the tabs to find the right LM for you.
     but they help your IDE or static checker (or even just yourself) to understand
     the inputs and outputs of the function.
 
+??? example "Let's test it"
+    Here's a quick test to verify your LM query function works:
+    
+    ```python
+    messages = [{"role": "user", "content": "Roll a d20"}]
+    print(query_lm(messages))
+    ```
+    
+    You should see the model's response, something like a dice roll result or explanation!
+
 ### Parse the action
 
 Let's parse the action. There's two simple ways in which the LM can "encode" the action (again, you don't need this if you use tool calls, but in this tutorial we'll keep it simpler):
@@ -321,6 +330,7 @@ def execute_action(command: str) -> str:
         errors="replace",
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        timeout=30,
     )
     return result.stdout
 ```
@@ -335,34 +345,242 @@ def execute_action(command: str) -> str:
     - `errors="replace"` - Replaces invalid characters instead of raising errors
     - `stdout=subprocess.PIPE` - Captures standard output
     - `stderr=subprocess.STDOUT` - Redirects stderr to stdout (so we capture both in one stream)
+    - `timeout=30`: Stop executing after
 
 Let's put it together and run it!
 
-### Let's run it!
+### Add a system prompt
+
+We still need to tell the LM a bit more about how to behave:
+
+### Let's put it together & run it!
 
 You should now have code that looks something like this (this example uses litellm + triple backticks):
 
-```python
+```python linenums="1"
+import re
+import subprocess
+import os
+from litellm import completion
+
+def query_lm(messages: list[dict[str, str]]) -> str:
+    response = completion(
+        model="openai/gpt-5.1
+        messages=messages
+    )
+    return response.choices[0].message.content
+
+def parse_action(lm_output: str) -> str:
+    """Take LM output, return action"""
+    matches = re.findall(
+        r"```bash-action\s*\n(.*?)\n```", 
+        lm_output, 
+        re.DOTALL
+    )
+    return matches[0].strip() if matches else ""
+
+def execute_action(command: str) -> str:
+    """Execute action, return output"""
+    result = subprocess.run(
+        command,
+        shell=True,
+        text=True,
+        env=os.environ,
+        encoding="utf-8",
+        errors="replace",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        timeout=30,
+    )
+    return result.stdout
+
+# Main agent loop
+messages = [{
+    "role": "system", 
+    "content": "You are a helpful assistant. When you want to run a command, wrap it in ```bash-action\n<command>\n```"
+}, {
+    "role": "user", 
+    "content": "List the files in the current directory"
+}]
 
 ```
 
 ## Let's make it more robust
 
+The following sections are some tweaks to improve performance.
+Nothing fancy, just making sure that the agent doesn't get stuck and can deal with things that go wrong.
+This section is a bit more advanced compared to the last one
+
+### Dealing with exceptions in the control flow
+
+The biggest idea here: Whenever a known exception arises, let's just tell the LM itself and let it handle it. This means adapting our `while` loop a bit:
+
+```python
+while True:
+    try:
+        # previous content
+    except Exception as e:
+        messages.append({"role": "user", "content": str(e)})
+```
+
+That's it!
+Now imagine the agent does something stupid (like calling `vim`) and a `TimeoutError` is triggered.
+No problem, this will just cause the error message to be appended to the messages and the
+LM can pick up from there, hopefully realizing what it did wrong.
+
+However, we might only limit this behavior to some known problems or add more information to the message. In this case, we can be more specific, for example
+
+```python
+class OurTimeoutError(RuntimeError): ...
+
+def execute_action(action: str) -> str:
+    try:
+        # as before
+    except TimeoutError as e:
+        raise OurTimeoutError("Your last command time out, you might want to ...") from e
+```
+
+and just like this, we've added additional information for the LM.
+
+You might also want to be more specific with what exceptions are handed to the LM and which just cause the program to crash. In this case it might make sense to define a custom exception class and only catch that in the `while` loop:
+
+```python
+class NonterminatingException(RuntimeError): ...
+class OurTimeoutError(NonterminatingException): ...
+
+while True:
+    try: 
+        ...
+    except NonterminatingException as e:
+        ...
+```
+
+mini-swe-agent additionally [defines]() a `TerminatingException` class which is used instead of the `if action == "exit"` mechanism to stop the `while` loop in a graceful way:
+
+```python
+class TerminatingException(RuntimeError): ...
+class Submitted: ...  # agent wants to stop
+
+def execute_action(action: str) -> str:
+    if action == "exit":
+        raise TerminatingException("LM requested to quit")
+    ...
+
+while True:
+    try:
+        ...
+    except NonterminatingException as e:
+        ...
+    except TerminatingException as e:
+        print("Stopping because of ", str(e))
+        break
+```
+
 ### Handling malformatted outputs
 
-### Handling timeouts
+Sometimes (especially with weaker LMs), the LM will not properly format it's action.
+It's good to remind it about the correct way in that case:
+This should be very straightforward now that we have the general exception handling in place:
 
-### Using toolcalls & adding tools
+```python
+incorrect_format_message = """Your output was malformated.
+Please include exactly 1 action formatted as in the following example:
 
-## Make it pretty & interactive
+```bash-action
+ls -R
+```
+"""
+class FormatError(RuntimeError): ...
+
+def parse_action(action: str) -> str:
+   matches = ...
+   if not len(matches) == 1:
+    raise FormatError(incorrect_format_message)
+   ...
+```
+
+### Environment variables
+
+There's a couple of environment variables that we can set to disable interactive
+elements in command line tools that avoid the agent getting stuck (you can see them being set in the [`mini-swe-agent` SWE-bench config](...)):
+
+```python
+env_vars = {
+    PAGER: cat
+    MANPAGER: cat
+    LESS: -R
+    PIP_PROGRESS_BAR: 'off'
+    TQDM_DISABLE: '1'
+}
+
+# ...
+
+def execute_action(command: str) -> str:
+    # ...
+    result = subprocess.run(
+        command,
+        # ...
+        env=os.environ | env_vars
+        # ...
+)
+```
+
 
 ## mini-swe-agent
 
+[`mini-swe-agent`](https://github.com/swe-agent/mini-swe-agent) is built exactly according to the blueprint of this tutorial and it should be very easy for you to understand it's source code.
+The only important thing to note is that it is built more modular, so that you can swap out all components.
+
+The `Agent` class (]full code](...)) contains the big `while` loop in the `run` function
+
+```python
+class Agent:
+    def __init__(self, model, environment):
+        self.model = model
+        self.environment = environment
+        ... 
+    
+    def run(self, task: str):
+        while True:
+            ...
+```
+
+The model class ([full code](...)) handles different LMs
+
+```python
+class Model:
+    def query(messages: list[dict[str, str]]):
+        ...
+```
+
+and the environment class ([local environment](...)) executes actions:
+
+```python
+class Environment:
+    def execute(command: str):
+        ...
+```
+
+`mini-swe-agent` provides different environment classes that for example allow to execute actions in docker containers instead of directly in your local environment.
+
 <h2 id="contribute">Contribute to this guide</h2>
 
-We welcome contributions to improve this guide! Whether it's fixing typos, adding examples, or expanding sections, your input is valuable.
+We welcome contributions to improve this guide! 
+Particularly, the following is very appreciated right now:
+
+- Bug fixes
+- Typo fixes
+- Adding support to popular LMs that aren't mentioned yet
+
+The following things should be discussed first (via github issue)
+
+- Additional sections
+- Significant expansions of sections
+
+Please understand that the larger your changes are, the more time we will need to review and the less likely it is we can accept them (unless we discussed beforehand).
 
 To contribute:
+
 - Fork the repository
 - Make your changes
 - Submit a pull request

@@ -214,6 +214,7 @@ pre code {
     background-color: transparent;
     padding: 0;
     font-size: 0.9rem;
+    line-height: 1.5;
 }
 
 /* Syntax highlighting overrides */
@@ -222,6 +223,7 @@ pre code {
     padding: 1rem;
     overflow-x: auto;
     margin-bottom: 1rem;
+    line-height: 1.5;
 }
 
 .highlight pre {
@@ -229,6 +231,66 @@ pre code {
     border: none;
     padding: 0;
     margin: 0;
+    line-height: 1.5;
+}
+
+/* Line numbers styling */
+.highlight .linenos,
+.highlight .linenodiv {
+    background-color: transparent;
+    border-right: 1px solid var(--color-border);
+    color: var(--color-text);
+    opacity: 0.5;
+    padding-right: 0.75rem;
+    margin-right: 0.75rem;
+    user-select: none;
+    text-align: right;
+}
+
+.highlight .linenos pre,
+.highlight .linenodiv pre {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    line-height: inherit;
+}
+
+/* Make sure line numbers and code are properly aligned */
+.highlight table {
+    border-spacing: 0;
+    border: none;
+    width: 100%;
+    line-height: 1.5;
+}
+
+.highlight table td {
+    padding: 0;
+    border: none;
+    line-height: 1.5;
+}
+
+.highlight table td.linenos {
+    width: 1%;
+    vertical-align: top;
+}
+
+.highlight table td.code {
+    width: 99%;
+    vertical-align: top;
+}
+
+.highlight table td.linenos pre,
+.highlight table td.code pre {
+    line-height: 1.5;
+}
+
+.highlight code {
+    line-height: 1.5;
+}
+
+.highlight .highlight {
+    line-height: 1.5;
 }
 
 /* Admonitions */
