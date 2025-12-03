@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="static/pygments-dark.css" id="pygments-dark">
 </head>
 <body>
-    <header>
-        <nav class="nav-container">
+    <!-- Sidebar TOC on the right -->
+    <aside class="toc-sidebar">
+        <div class="toc-header">
+            <h3>Contents</h3>
             <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
                 <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="5"></circle>
@@ -27,8 +29,12 @@
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>
             </button>
+        </div>
+        <nav class="toc-nav">
+            {{ toc }}
         </nav>
-    </header>
+    </aside>
+    
     <div class="container">
         <main>
             {{ content }}
@@ -66,6 +72,48 @@
                 applyTheme(newTheme);
                 localStorage.setItem('theme', newTheme);
             });
+        })();
+
+        // TOC active section highlighting
+        (function() {
+            const tocLinks = document.querySelectorAll('.toc-nav a');
+            if (tocLinks.length === 0) return;
+            
+            // Get all headings that have IDs
+            const headings = Array.from(document.querySelectorAll('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]'));
+            
+            function updateActiveLink() {
+                let currentHeading = null;
+                const scrollPosition = window.scrollY + 100; // offset for better UX
+                
+                // Find the current heading
+                for (let i = headings.length - 1; i >= 0; i--) {
+                    if (headings[i].offsetTop <= scrollPosition) {
+                        currentHeading = headings[i];
+                        break;
+                    }
+                }
+                
+                // Update active class
+                tocLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (currentHeading && link.getAttribute('href') === '#' + currentHeading.id) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            
+            // Update on scroll with throttling
+            let scrollTimeout;
+            window.addEventListener('scroll', function() {
+                if (scrollTimeout) {
+                    window.cancelAnimationFrame(scrollTimeout);
+                }
+                scrollTimeout = window.requestAnimationFrame(updateActiveLink);
+            });
+            
+            // Initial update
+            updateActiveLink();
         })();
     </script>
 </body>

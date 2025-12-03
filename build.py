@@ -85,6 +85,9 @@ def build_site():
     if md_content.strip().startswith("# "):
         title = md_content.split("\n")[0].replace("# ", "")
     
+    # Get the table of contents from the markdown processor
+    toc_html = md.toc if hasattr(md, 'toc') else ""
+    
     # Read template
     with open(template_file, "r", encoding="utf-8") as f:
         template = f.read()
@@ -92,6 +95,7 @@ def build_site():
     # Replace placeholders in template
     final_html = template.replace("{{ title }}", title)
     final_html = final_html.replace("{{ content }}", html_content)
+    final_html = final_html.replace("{{ toc }}", toc_html)
     
     # Write output HTML
     output_file = output_dir / "index.html"

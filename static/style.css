@@ -39,23 +39,92 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Header and navigation */
-header {
-    background-color: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
-    position: sticky;
+/* Table of Contents Sidebar - Right side, subtle */
+.toc-sidebar {
+    position: fixed;
+    right: 0;
     top: 0;
+    width: 280px;
+    height: 100vh;
+    background-color: transparent;
+    overflow-y: auto;
     z-index: 100;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    padding: 2rem 1.5rem;
 }
 
-.nav-container {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 1rem var(--spacing);
+.toc-header {
+    padding: 0 0 1rem 0;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: var(--color-bg);
+    z-index: 10;
+    padding-top: 1rem;
+}
+
+.toc-header h3 {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+}
+
+.toc-nav {
+    padding: 0;
+}
+
+.toc-nav ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.toc-nav li {
+    margin-bottom: 0.35rem;
+}
+
+.toc-nav a {
+    display: block;
+    color: var(--color-text);
+    text-decoration: none;
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+    opacity: 0.6;
+    line-height: 1.4;
+}
+
+.toc-nav a:hover {
+    opacity: 1;
+    background-color: var(--color-code-bg);
+    text-decoration: none;
+}
+
+.toc-nav a.active {
+    opacity: 1;
+    color: var(--color-link);
+    font-weight: 500;
+}
+
+/* Nested TOC items */
+.toc-nav ul ul {
+    padding-left: 0.75rem;
+    margin-top: 0.2rem;
+}
+
+.toc-nav ul ul a {
+    font-size: 0.8rem;
+    opacity: 0.5;
+}
+
+.toc-nav ul ul a:hover,
+.toc-nav ul ul a.active {
+    opacity: 0.9;
 }
 
 .theme-toggle {
@@ -450,6 +519,12 @@ li {
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+    .toc-sidebar {
+        display: none;
+    }
+}
+
 @media (max-width: 768px) {
     body {
         padding: 1rem;
