@@ -1,11 +1,11 @@
 <div class="hero-title">
-  <h1 class="main-title">Building a minimal AI agent</h1>
-  <p class="subtitle">for software engineering, terminal use and more</p>
+  <h1 class="main-title">Building a minimal AI agent from scratch</h1>
+  <p class="subtitle">for software engineering, terminal use, and more</p>
 </div>
 
 <div class="author-box">
   <p><strong>Authors:</strong> Kilian Lieret, Carlos Jimenez, John Yang, Ofir Press.</p>
-  <p><strong>Contributions by</strong> <a href="#contribute">Contribute</a></p>
+  <p><strong>Contributions by</strong> ... <a href="#contribute">Contribute</a></p>
 </div>
 
 So you want to build your own AI agent from scratch? The good news: It's super simple, especially with more recent language models.
