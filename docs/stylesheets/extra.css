@@ -1,0 +1,125 @@
+/* Custom styles for hero title and author box only */
+
+/* Hero title section */
+.hero-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem 0;
+}
+
+.hero-title .main-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.hero-title .subtitle {
+    font-size: 1.5rem;
+    opacity: 0.7;
+    margin: 0;
+    font-weight: 300;
+}
+
+/* Author box */
+.author-box {
+    background-color: var(--md-default-bg-color);
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.author-box p {
+    margin: 0.5rem 0;
+}
+
+.author-box strong {
+    font-weight: 600;
+}
+
+/* Layout adjustments */
+
+/* Move sidebar to the right and swap positions */
+@media screen and (min-width: 76.25em) {
+    .md-sidebar--primary {
+        left: auto;
+        right: 0;
+        order: 2;
+    }
+    
+    .md-sidebar--secondary {
+        left: 0;
+        right: auto;
+        order: 1;
+    }
+}
+
+/* Narrower content width (closer to 800px like original) */
+.md-grid {
+    max-width: 56rem;  /* Reduced from 61rem for narrower content */
+}
+
+.md-main__inner {
+    max-width: 56rem;
+}
+
+.md-content {
+    max-width: 50rem;  /* Further constrain the actual content area */
+}
+
+/* More subtle header - white/black background instead of blue */
+.md-header {
+    background-color: var(--md-default-bg-color);
+    color: var(--md-default-fg-color);
+    box-shadow: 0 0 0.05rem rgba(0, 0, 0, 0.05), 0 0.05rem 0.1rem rgba(0, 0, 0, 0.025);
+    border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* Simplify header inner spacing */
+.md-header__inner {
+    padding: 0.4rem 0.8rem;
+}
+
+/* Ensure header elements are visible in both themes */
+.md-header__button {
+    color: var(--md-default-fg-color);
+}
+
+.md-header__title {
+    color: var(--md-default-fg-color);
+}
+
+.md-header__source {
+    color: var(--md-default-fg-color);
+}
+
+/* Fix search bar visibility on hover */
+.md-search__input:hover,
+.md-search__input:focus {
+    background-color: var(--md-code-bg-color);
+}
+
+.md-search__input {
+    background-color: var(--md-code-bg-color);
+    color: var(--md-default-fg-color);
+}
+
+/* Fix search bar placeholder text color */
+.md-search__input::placeholder {
+    color: var(--md-default-fg-color);
+    opacity: 0.6;
+}
+
+/* Mobile responsive adjustments for custom elements */
+@media (max-width: 768px) {
+    .hero-title .main-title {
+        font-size: 2rem;
+    }
+    
+    .hero-title .subtitle {
+        font-size: 1.25rem;
+    }
+}

@@ -4,11 +4,10 @@ This repository hosts the code for [minimal-agent.com](https://minimal-agent.com
 
 ## Structure
 
-- `tutorial.md` - Main content in Markdown format
-- `template.html` - HTML template for the static site
-- `static/` - Static assets (CSS, etc.)
-- `build.py` - Python script to generate the static HTML website
-- `output/` - Generated static website (git-ignored)
+- `docs/index.md` - Main content in Markdown format
+- `docs/stylesheets/` - Custom CSS for the site
+- `mkdocs.yml` - MkDocs configuration
+- `site/` - Generated static website (git-ignored)
 
 ## Building the Site
 
@@ -19,40 +18,50 @@ This repository hosts the code for [minimal-agent.com](https://minimal-agent.com
 
 2. Build the site:
    ```bash
-   python build.py
+   mkdocs build
    ```
 
-3. The generated site will be in the `output/` directory. Open `output/index.html` in your browser.
+3. The generated site will be in the `site/` directory. Open `site/index.html` in your browser.
 
 ## Development Mode
 
-For live development with automatic rebuilding:
+For live development with automatic rebuilding and hot reload:
 
 ```bash
-python build.py --serve
+mkdocs serve
 ```
 
 This will:
 - Start a local server at `http://localhost:8000`
-- Watch for changes to `.md`, `.html`, `.css`, and `.js` files
-- Automatically rebuild the site when files change
-- Just refresh your browser to see updates!
+- Watch for changes to markdown and configuration files
+- Automatically rebuild and reload the site when files change
+- No need to refresh your browser!
 
 You can specify a custom port:
 
 ```bash
-python build.py --serve --port 3000
+mkdocs serve -a localhost:3000
+```
+
+## Deployment
+
+To deploy to GitHub Pages:
+
+```bash
+mkdocs gh-deploy
 ```
 
 ## Markdown Features
 
-The site supports:
+The site uses [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) and supports:
+
 - Standard Markdown syntax
 - Inline HTML content
-- Code blocks with syntax highlighting
+- Code blocks with syntax highlighting and line numbers
 - Admonitions (notes, warnings, etc.)
 - Tabbed content
 - Collapsible sections (details/summary)
+- Dark/light theme toggle
 
 ### Example Admonition
 
@@ -79,4 +88,3 @@ Use `!!!` syntax for admonitions:
 ??? "Click to expand"
     Hidden content here
 ```
-

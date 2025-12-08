@@ -1,5 +1,5 @@
 # Build output
-output/
+site/
 
 # Python
 __pycache__/
