@@ -11,11 +11,8 @@
 So you want to build your own AI agent from scratch? The good news: It's super simple, especially with more recent language models.
 We won't be using any external packages (other than to query the LM), and our initial minimal agent is only some 60 lines long.
 
-And if you think this is too simplified and can never work in practice: Our [`mini` agent](https://mini-swe-agent.com) is built exactly the same (just with a bit more fluff to support more models be a bit more convenient) and it scores up to 74% on [SWE-bench verified](https://www.swebench.com/), only a few percent below highly optimized agents. 
-
-Your final result will look like this:
-
-
+And if you think this is too simplified and can never work in practice: Our [`mini` agent](https://mini-swe-agent.com) is built exactly the same, and is used for research at Princeton, Stanford, NVIDIA, Anyscale, essentials.ai and more. 
+Using this simple guide you can score up to 74% on [SWE-bench verified](https://www.swebench.com/), only a few percent below highly optimized agents. 
 
 ## Our first prototype in 50 lines
 
@@ -336,7 +333,7 @@ def execute_action(command: str) -> str:
     return result.stdout
 ```
 
-??? info "Understanding `subprocess.run arguments`"
+??? info "Understanding `subprocess.run` arguments"
     Let's break down the keyword arguments we're using:
     
     - `shell=True` - Allows running arbitrary shell commands given as a string (like `cd`, `ls`, pipes, etc.). Be careful with untrusted input!

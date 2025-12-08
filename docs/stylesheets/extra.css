@@ -41,33 +41,46 @@
 }
 
 /* Layout adjustments */
+:root {
+    --content-max: 40rem;   /* main text width (~800px) */
+    --toc-width: 16rem;     /* room for right TOC */
+    --layout-gap: 2rem;
+}
 
-/* Move sidebar to the right and swap positions */
+/* Keep sidebar on the right, but don't push main text left; center main text */
 @media screen and (min-width: 76.25em) {
+    .md-grid,
+    .md-main__inner {
+        max-width: calc(var(--content-max) + var(--toc-width) + 2 * var(--layout-gap));
+        width: 100%;
+    }
+
+    .md-main__inner {
+        display: grid;
+        grid-template-columns: 1fr minmax(0, var(--content-max)) var(--toc-width);
+        gap: var(--layout-gap);
+        align-items: start;
+    }
+
+    .md-content {
+        grid-column: 2;
+    }
+
+    /* Primary sidebar (TOC) on the right */
     .md-sidebar--primary {
+        grid-column: 3;
+        position: sticky;
+        top: var(--md-header-height, 3.2rem);
+        align-self: start;
         left: auto;
         right: 0;
         order: 2;
     }
-    
+
+    /* Secondary sidebar not used */
     .md-sidebar--secondary {
-        left: 0;
-        right: auto;
-        order: 1;
+        display: none;
     }
-}
-
-/* Narrower content width (closer to 800px like original) */
-.md-grid {
-    max-width: 56rem;  /* Reduced from 61rem for narrower content */
-}
-
-.md-main__inner {
-    max-width: 56rem;
-}
-
-.md-content {
-    max-width: 50rem;  /* Further constrain the actual content area */
 }
 
 /* More subtle header - white/black background instead of blue */
