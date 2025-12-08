@@ -56,6 +56,7 @@ So to get this to work, we only need to implement two things:
 
 
 Let's start with the first step. Click on the tabs to find the right LM for you.
+`litellm` supports most specific LMs, so this is a good default option if your LM is not explicitly mentioned.
 
 === "OpenAI"
 
@@ -347,7 +348,13 @@ def execute_action(command: str) -> str:
     - `stderr=subprocess.STDOUT` - Redirects stderr to stdout (so we capture both in one stream)
     - `timeout=30`: Stop executing after
 
-Let's put it together and run it!
+There are a couple of limitations to this:
+
+1. The agent will not be able to `cd` to a different environment
+2. The agent cannot persist environment variables easily
+
+However, in practice, we have found these limitations to be not very limiting at all.
+In fact, reducing the amount of hidden state and forcing the agent to work with absolute paths might well be helpful for language models in many instances.
 
 ### Add a system prompt
 
@@ -409,11 +416,12 @@ messages = [{
 
 The following sections are some tweaks to improve performance.
 Nothing fancy, just making sure that the agent doesn't get stuck and can deal with things that go wrong.
-This section is a bit more advanced compared to the last one
+This section is a bit more advanced.
+Instead of showing the complete code at the end, we encourage everyone to check out the [source code](https://github.com/SWE-agent/mini-swe-agent/) of our `mini` agent; it includes all of these features with very little fluff around it (also see the next section to get started with reading the code).
 
 ### Dealing with exceptions in the control flow
 
-The biggest idea here: Whenever a known exception arises, let's just tell the LM itself and let it handle it. This means adapting our `while` loop a bit:
+The idea here: Whenever a known exception arises (timeouts, format errors, etc.), let's just tell the LM and let it handle it itself. This means adapting our `while` loop a bit:
 
 ```python
 while True:
@@ -424,8 +432,8 @@ while True:
 ```
 
 That's it!
-Now imagine the agent does something stupid (like calling `vim`) and a `TimeoutError` is triggered.
-No problem, this will just cause the error message to be appended to the messages and the
+
+For example, if the agent does something stupid (like calling `vim`) and a `TimeoutError` is triggered, this will cause the error message to be appended to the messages and the
 LM can pick up from there, hopefully realizing what it did wrong.
 
 However, we might only limit this behavior to some known problems or add more information to the message. In this case, we can be more specific, for example
@@ -562,27 +570,36 @@ class Environment:
 ```
 
 `mini-swe-agent` provides different environment classes that for example allow to execute actions in docker containers instead of directly in your local environment.
+Sonds more complicated? It really isn't: all we do is switch from `subprocess.run` to calls to `docker exec`.
 
 <h2 id="contribute">Contribute to this guide</h2>
 
-We welcome contributions to improve this guide! 
-Particularly, the following is very appreciated right now:
+We welcome contributions on GitHub to improve this guide! 
 
-- Bug fixes
-- Typo fixes
-- Adding support to popular LMs that aren't mentioned yet
+??? Contribution guidelines
 
-The following things should be discussed first (via github issue)
+    The following PRs will be merged immediately
 
-- Additional sections
-- Significant expansions of sections
+    - Bug fixes
+    - Typo fixes
 
-Please understand that the larger your changes are, the more time we will need to review and the less likely it is we can accept them (unless we discussed beforehand).
+    The following PRs are much appreciated and will most likely be merged fast:
 
-To contribute:
+    - Adding support to popular LMs that aren't mentioned yet (please make sure test your implementation)
 
-- Fork the repository
-- Make your changes
-- Submit a pull request
+    The following things should be discussed first (via github issue):
 
-You can find the source code on GitHub.
+    - Additional sections
+    - Significant expansions of sections
+
+    Please understand that the larger your changes are, the more time we will need to review and the less likely it is we can accept them (unless we discussed beforehand).
+
+    To contribute:
+
+    - Fork the repository
+    - Make your changes
+    - Submit a pull request
+
+    You can find the source code on GitHub.
+
+If you have questions or comments, please comment below. Note that GitHub issues are still preferred for bug reports and discussions about further developing this page.
