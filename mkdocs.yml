@@ -1,4 +1,4 @@
-site_name: Minimal Agent
+site_name: Minimal AI agent tutorial
 site_url: https://minimal-agent.com
 site_description: Building a minimal AI agent for terminal use and more
 site_author: Kilian Lieret, Carlos Jimenez, John Yang, Ofir Press
@@ -10,6 +10,8 @@ repo_url: https://github.com/swe-agent/mini-swe-agent
 # Theme configuration
 theme:
   name: material
+  logo: assets/mini_square.svg
+  favicon: assets/mini.png
   palette:
     # Light mode
     - media: "(prefers-color-scheme: light)"
