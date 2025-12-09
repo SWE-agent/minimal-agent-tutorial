@@ -221,6 +221,13 @@ Let's start with the first step. Click on the tabs to find the right LM for you.
     
     You should see the model's response, something like a dice roll result or explanation!
 
+??? info "In production"
+    If you want to see how this is done in production, check out the model classes in [mini](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/):
+
+    
+    - [LiteLLM model](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/litellm_model.py)
+    - [OpenRouter model](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/models/openrouter_model.py)
+
 ### Parse the action
 
 Let's parse the action. There's two simple ways in which the LM can "encode" the action (again, you don't need this if you use tool calls, but in this tutorial we'll keep it simpler):
@@ -312,6 +319,10 @@ Here's a quick regular expression to parse the action:
     
     `findall` returns only what's inside the parentheses, not the surrounding markers.
 
+??? info "In production"
+    If you want to see how this is done in production, check out the [parse_action implementation in default.py](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/agents/default.py) in mini-swe-agent.
+
+
 ### Execute the action
 
 Now as for executing the action, it's actually very simple, we can just use python's `subprocess` module (or just `os.system`, though that's generally less recommended)
@@ -336,6 +347,7 @@ def execute_action(command: str) -> str:
     return result.stdout
 ```
 
+
 ??? info "Understanding `subprocess.run` arguments"
     Let's break down the keyword arguments we're using:
     
@@ -347,6 +359,12 @@ def execute_action(command: str) -> str:
     - `stdout=subprocess.PIPE` - Captures standard output
     - `stderr=subprocess.STDOUT` - Redirects stderr to stdout (so we capture both in one stream)
     - `timeout=30`: Stop executing after
+
+??? info "In production"
+    If you want to see how this is done in production, check out mini-swe-agent's environment classes:
+    
+    - [Local environment](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/environments/local.py) - the closest equivalent to the code above
+    - [Docker environment](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/environments/docker.py) - almost the same as local, except commands are executed via `docker exec` instead of `subprocess.run`
 
 There are a couple of limitations to this:
 
