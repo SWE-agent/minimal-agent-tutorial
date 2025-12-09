@@ -50,7 +50,7 @@ So to get this to work, we only need to implement two things:
 
 1. Querying the LM API (this can get annoying if you want to support all LMs, or want detailed cost information, but is very simple if you already know which model you want)
 2. Parsing the action (`parse_action`). You don't need this if you use the tool calling functionality of your LM if it supports it, but this is more provider-specific, so we wo'nt cover it in this guide for now (don't worry, the performance should not be impacted by this).
-3. Executing the action (very simple)
+3. Executing the action (very simple, in our case we will simply execute any action of the LM as a bash-command in the terminal).
 
 ### Querying the LM
 
@@ -636,7 +636,6 @@ If you have questions or comments, please comment below. Note that GitHub issues
         data-input-position="top"
         data-theme="preferred_color_scheme"
         data-lang="en"
-        data-loading="lazy"
         crossorigin="anonymous"
         async>
 </script>
