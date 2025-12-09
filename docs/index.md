@@ -25,12 +25,15 @@ Pseudocode:
 messages = [{"role": "user", "content": "Help me fix the ValueError in main.py"}]
 while True:
 	lm_output = query_lm(messages)
-	messages.append({"role": .., lm_output)  # remember what was executed
+    print("LM output", output)
+	messages.append({"role": "assistant", "content": lm_output})  # remember what the LM said
 	action = parse_action(lm_output)  # separate the action from output
+    print("Action", action)
     if action == "exit":
         break
 	output = execute_action(action)
-	messages.append({"role": ..., output)
+    print("Output", output)
+	messages.append({"role": "user", "content": output})  # send command output back
 ```
 
 ??? info "What's up with the `role` field?"
@@ -369,7 +372,7 @@ from litellm import completion
 
 def query_lm(messages: list[dict[str, str]]) -> str:
     response = completion(
-        model="openai/gpt-5.1
+        model="openai/gpt-5.1",
         messages=messages
     )
     return response.choices[0].message.content
@@ -407,14 +410,18 @@ messages = [{
     "content": "List the files in the current directory"
 }]
 
+messages = [{"role": "user", "content": "Help me fix the ValueError in main.py"}]
 while True:
 	lm_output = query_lm(messages)
-	messages.append({"role": .., lm_output)  # remember what was executed
+    print("LM output", output)
+	messages.append({"role": "assistant", "content": lm_output})  # remember what the LM said
 	action = parse_action(lm_output)  # separate the action from output
+    print("Action", action)
     if action == "exit":
         break
 	output = execute_action(action)
-	messages.append({"role": ..., output)
+    print("Output", output)
+	messages.append({"role": "user", "content": output})  # send command output back
 ```
 
 ## Let's make it more robust
