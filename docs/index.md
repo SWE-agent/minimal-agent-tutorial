@@ -360,6 +360,14 @@ In fact, reducing the amount of hidden state and forcing the agent to work with 
 
 We still need to tell the LM a bit more about how to behave:
 
+```python
+messages = [{
+    "role": "system", 
+    "content": "You are a helpful assistant. When you want to run a command, wrap it in ```bash-action\n<command>\n```. To finish, run the exit command."
+}
+]
+```
+
 ### Let's put it together & run it!
 
 You should now have code that looks something like this (this example uses litellm + triple backticks):
@@ -404,7 +412,7 @@ def execute_action(command: str) -> str:
 # Main agent loop
 messages = [{
     "role": "system", 
-    "content": "You are a helpful assistant. When you want to run a command, wrap it in ```bash-action\n<command>\n```"
+    "content": "You are a helpful assistant. When you want to run a command, wrap it in ```bash-action\n<command>\n```. To finish, run the exit command."
 }, {
     "role": "user", 
     "content": "List the files in the current directory"
