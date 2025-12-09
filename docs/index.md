@@ -495,7 +495,7 @@ Sometimes (especially with weaker LMs), the LM will not properly format it's act
 It's good to remind it about the correct way in that case:
 This should be very straightforward now that we have the general exception handling in place:
 
-```python
+````python
 incorrect_format_message = """Your output was malformated.
 Please include exactly 1 action formatted as in the following example:
 
@@ -508,9 +508,9 @@ class FormatError(RuntimeError): ...
 def parse_action(action: str) -> str:
    matches = ...
    if not len(matches) == 1:
-    raise FormatError(incorrect_format_message)
+       raise FormatError(incorrect_format_message)
    ...
-```
+````
 
 ### Environment variables
 
