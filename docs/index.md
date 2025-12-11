@@ -74,11 +74,11 @@ Let's start with the first step. Click on the tabs to find the right LM for you.
     )  # or set OPENAI_API_KEY env var
     
     def query_lm(messages):
-        response = client.chat.completions.create(
+        response = client.responses.create(
             model="gpt-5.1",
-            messages=messages
+            input=messages
         )
-        return response.choices[0].message.content
+        return response.output_text
     ```
 
 === "Anthropic"
