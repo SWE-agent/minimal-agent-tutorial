@@ -204,6 +204,8 @@ Let's start with the first step. Click on the tabs to find the right LM for you.
         
         To make persistent, use "Environment Variables" in System Properties.
 
+    Alternatively, you can use a `.env` file with [python-dotenv](https://pypi.org/project/python-dotenv/).
+
 ??? info "Type hints in python"
 
     In case you're wondering about the `list[dict[str, str]]` and the `-> str` in the
