@@ -10,6 +10,7 @@ repo_url: https://github.com/swe-agent/mini-swe-agent
 # Theme configuration
 theme:
   name: material
+  custom_dir: docs/overrides
   logo: assets/mini_square.svg
   favicon: assets/mini.png
   palette:
