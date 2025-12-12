@@ -10,13 +10,6 @@ This repo contains the **documentation website** for the Minimal Agent tutorial.
 - 📦 [mini-swe-agent](https://github.com/SWE-agent/mini-swe-agent) — The full implementation (~74% on SWE-bench verified)
 - 📄 [minimal-agent.com](https://minimal-agent.com) — The tutorial (copy-paste code from here)
 
-## What the tutorial covers
-
-- Querying LLM APIs (OpenAI, Anthropic, OpenRouter, LiteLLM)
-- Parsing agent actions from model output
-- Executing bash commands safely
-- Building the agent loop
-- System prompts and advanced patterns
 
 ## Local development
 
