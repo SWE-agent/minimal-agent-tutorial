@@ -7,7 +7,7 @@
 This repo contains the **documentation website** for the Minimal Agent tutorial. It's a static site built with MkDocs that teaches developers how to build a terminal-based AI agent in ~60 lines of Python.
 
 **Looking for the actual agent code?**
-- 📦 [mini-swe-agent](https://github.com/SWE-agent/mini-swe-agent) — The full implementation (~74% on SWE-bench verified)
+- 📦 [mini-swe-agent](https://github.com/SWE-agent/mini-swe-agent) — The full implementation.
 - 📄 [minimal-agent.com](https://minimal-agent.com) — The tutorial (copy-paste code from here)
 
 
