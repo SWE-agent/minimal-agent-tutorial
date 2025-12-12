@@ -1,90 +1,34 @@
-# Minimal Agent Website
+# Minimal Agent Tutorial
 
-This repository hosts the code for [minimal-agent.com](https://minimal-agent.com), a minimalistic one-page website that teaches you how to build a minimal AI agent for terminal use.
+> Source code for [minimal-agent.com](https://minimal-agent.com) — a tutorial that teaches you how to build an AI coding agent from scratch.
 
-## Structure
+## What is this?
 
-- `docs/index.md` - Main content in Markdown format
-- `docs/stylesheets/` - Custom CSS for the site
-- `mkdocs.yml` - MkDocs configuration
-- `site/` - Generated static website (git-ignored)
+This repo contains the **documentation website** for the Minimal Agent tutorial. It's a static site built with MkDocs that teaches developers how to build a terminal-based AI agent in ~60 lines of Python.
 
-## Building the Site
+**Looking for the actual agent code?**
+- 📦 [mini-swe-agent](https://github.com/SWE-agent/mini-swe-agent) — The full implementation (~74% on SWE-bench verified)
+- 📄 [minimal-agent.com](https://minimal-agent.com) — The tutorial (copy-paste code from here)
 
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## What the tutorial covers
 
-2. Build the site:
-   ```bash
-   mkdocs build
-   ```
+- Querying LLM APIs (OpenAI, Anthropic, OpenRouter, LiteLLM)
+- Parsing agent actions from model output
+- Executing bash commands safely
+- Building the agent loop
+- System prompts and advanced patterns
 
-3. The generated site will be in the `site/` directory. Open `site/index.html` in your browser.
-
-## Development Mode
-
-For live development with automatic rebuilding and hot reload:
+## Local development
 
 ```bash
+pip install -r requirements.txt
 mkdocs serve
 ```
 
-This will:
-- Start a local server at `http://localhost:8000`
-- Watch for changes to markdown and configuration files
-- Automatically rebuild and reload the site when files change
-- No need to refresh your browser!
+Then open http://localhost:8000
 
-You can specify a custom port:
+## Contributing
 
-```bash
-mkdocs serve -a localhost:3000
-```
+The tutorial content is in `docs/index.md`. Edit that file and submit a PR.
 
-## Deployment
-
-To deploy to GitHub Pages:
-
-```bash
-mkdocs gh-deploy
-```
-
-## Markdown Features
-
-The site uses [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) and supports:
-
-- Standard Markdown syntax
-- Inline HTML content
-- Code blocks with syntax highlighting and line numbers
-- Admonitions (notes, warnings, etc.)
-- Tabbed content
-- Collapsible sections (details/summary)
-- Dark/light theme toggle
-
-### Example Admonition
-
-Use `!!!` syntax for admonitions:
-
-```markdown
-!!! note "This is a note"
-    This is the content of the note.
-```
-
-### Example Tabbed Content
-
-```markdown
-=== "Tab 1"
-    Content for tab 1
-
-=== "Tab 2"
-    Content for tab 2
-```
-
-### Example Foldout
-
-```markdown
-??? "Click to expand"
-    Hidden content here
-```
+This site uses [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) which supports admonitions, tabs, code highlighting, and more.
