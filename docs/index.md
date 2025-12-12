@@ -375,6 +375,7 @@ There are a couple of limitations to this:
 
 However, in practice, we have found these limitations to be not very limiting at all.
 In fact, reducing the amount of hidden state and forcing the agent to work with absolute paths might well be helpful for language models in many instances.
+It is also similar with `ClaudeCode` (while it can change directories, it cannot persist environment variables, because it similarly uses subshells to execute commands).
 
 ### Add a system prompt
 
