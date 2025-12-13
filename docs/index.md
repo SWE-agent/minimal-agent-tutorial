@@ -327,30 +327,79 @@ Here's a quick regular expression to parse the action:
 
 Now as for executing the action, it's actually very simple, we can just use python's `subprocess` module (or just `os.system`, though that's generally less recommended)
 
-```python
-import subprocess
-import os
+=== "subprocess.run"
 
-def execute_action(command: str) -> str:
-    """Execute action, return output"""
-    result = subprocess.run(
-        command,
-        shell=True,
-        text=True,
-        env=os.environ,
-        encoding="utf-8",
-        errors="replace",
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        timeout=30,
-    )
-    return result.stdout
-```
+    ```python
+    import subprocess
+    import os
 
+    def execute_action(command: str) -> str:
+        """Execute action, return output"""
+        result = subprocess.run(
+            command,
+            shell=True,
+            text=True,
+            env=os.environ,
+            encoding="utf-8",
+            errors="replace",
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=30,
+        )
+        return result.stdout
+    ```
+
+=== "subprocess.Popen"
+
+    For asynchronous execution , use `Popen`:
+
+    ```python
+    import subprocess
+    import os
+    import threading
+
+    def execute_action(command: str) -> str:
+        """Execute action, return output"""
+        proc = subprocess.Popen(
+            command,
+            shell=True,
+            text=True,
+            env=os.environ,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        stdout_lines: list[str] = []
+        stderr_lines: list[str] = []
+
+        def read_stream(stream, lines):
+            for line in stream:
+                lines.append(line)
+
+        stdout_thread = threading.Thread(
+            target=read_stream, args=(proc.stdout, stdout_lines)
+        )
+        stderr_thread = threading.Thread(
+            target=read_stream, args=(proc.stderr, stderr_lines)
+        )
+
+        stdout_thread.start()
+        stderr_thread.start()
+
+        try:
+            proc.wait(timeout=30)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+
+        stdout_thread.join()
+        stderr_thread.join()
+
+        return "".join(stdout_lines) + "".join(stderr_lines)
+    ```
 
 ??? info "Understanding `subprocess.run` arguments"
     Let's break down the keyword arguments we're using:
-    
+
     - `shell=True` - Allows running arbitrary shell commands given as a string (like `cd`, `ls`, pipes, etc.). Be careful with untrusted input!
     - `text=True` - Returns output as strings instead of bytes
     - `env=os.environ` - Passes the current environment variables to the subprocess
@@ -360,11 +409,18 @@ def execute_action(command: str) -> str:
     - `stderr=subprocess.STDOUT` - Redirects stderr to stdout (so we capture both in one stream)
     - `timeout=30`: Stop executing after
 
+??? info "Understanding `subprocess.Popen`"
+    From [Python docs](https://docs.python.org/3/library/subprocess.html): *"The recommended approach to invoking subprocesses is to use the run() function for all use cases it can handle. For more advanced use cases, the underlying Popen interface can be used directly"*
+
+    
+    [Popen documentation](https://docs.python.org/3/library/subprocess.html#popen-constructor) for all arguments.
+
 ??? info "In production"
     If you want to see how this is done in production, check out mini-swe-agent's environment classes:
-    
+
     - [Local environment](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/environments/local.py) - the closest equivalent to the code above
     - [Docker environment](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/environments/docker.py) - almost the same as local, except commands are executed via `docker exec` instead of `subprocess.run`
+    - [OpenHands Software Agent SDK](https://github.com/OpenHands/software-agent-sdk/blob/e6ab3d1bc4f832987ef13594da62dbbf38162918/openhands-sdk/openhands/sdk/utils/command.py#L29) - uses `Popen` with threading for real-time output streaming
 
 There are a couple of limitations to this:
 
