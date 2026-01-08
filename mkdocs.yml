@@ -4,8 +4,8 @@ site_description: Building a minimal AI agent for terminal use and more
 site_author: Kilian Lieret, Carlos Jimenez, John Yang, Ofir Press
 
 # Repository
-repo_name: swe-agent/mini-swe-agent
-repo_url: https://github.com/swe-agent/mini-swe-agent
+repo_name: swe-agent/minimal-agent-tutorial
+repo_url: https://github.com/swe-agent/minimal-agent-tutorial
 
 # Theme configuration
 theme:
