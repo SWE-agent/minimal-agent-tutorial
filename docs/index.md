@@ -552,11 +552,11 @@ elements in command line tools that avoid the agent getting stuck (you can see t
 
 ```python
 env_vars = {
-    PAGER: cat
-    MANPAGER: cat
-    LESS: -R
-    PIP_PROGRESS_BAR: 'off'
-    TQDM_DISABLE: '1'
+    "PAGER": "cat",
+    "MANPAGER": "cat",
+    "LESS": "-R",
+    "PIP_PROGRESS_BAR": "off",
+    "TQDM_DISABLE": "1",
 }
 
 # ...
