@@ -436,13 +436,12 @@ messages = [{
     "content": "You are a helpful assistant. When you want to run a command, wrap it in ```bash-action\n<command>\n```. To finish, run the exit command."
 }, {
     "role": "user", 
-    "content": "List the files in the current directory"
+    "content": "Help me fix the ValueError in main.py"
 }]
 
-messages = [{"role": "user", "content": "Help me fix the ValueError in main.py"}]
 while True:
 	lm_output = query_lm(messages)
-    print("LM output", output)
+    print("LM output", lm_output)
 	messages.append({"role": "assistant", "content": lm_output})  # remember what the LM said
 	action = parse_action(lm_output)  # separate the action from output
     print("Action", action)
