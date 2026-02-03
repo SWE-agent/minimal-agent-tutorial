@@ -436,7 +436,7 @@ messages = [{
     "content": "You are a helpful assistant. When you want to run a command, wrap it in ```bash-action\n<command>\n```. To finish, run the exit command."
 }, {
     "role": "user", 
-    "content": "Help me fix the ValueError in main.py"
+    "content": "List the files in the current directory"
 }]
 
 while True:
