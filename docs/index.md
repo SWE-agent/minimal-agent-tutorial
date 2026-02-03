@@ -439,7 +439,6 @@ messages = [{
     "content": "List the files in the current directory"
 }]
 
-messages = [{"role": "user", "content": "Help me fix the ValueError in main.py"}]
 while True:
 	lm_output = query_lm(messages)
     print("LM output", lm_output)
