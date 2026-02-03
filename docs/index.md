@@ -5,7 +5,8 @@
 
 <div class="author-box">
   <p><strong>Authors:</strong> Kilian Lieret, Carlos Jimenez, John Yang, Ofir Press.</p>
-  <p><strong>Contributions by</strong> Cesar Garcia <a href="#contribute">Contribute</a></p>
+  <p><strong>Contributors:</strong><a href="https://github.com/Chesars">Cesar Garcia</a>, <a href="https://github.com/piotx">piot</a></p>
+  <p><strong>( <a href="#contribute-to-this-guide"> Contribute to this guide</a> )</p>
 </div>
 
 So you want to build your own AI agent from scratch? The good news: It's super simple, especially with more recent language models.
