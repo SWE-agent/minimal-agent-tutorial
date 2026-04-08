@@ -25,8 +25,8 @@ Pseudocode:
 ```python
 messages = [{"role": "user", "content": "Help me fix the ValueError in main.py"}]
 while True:
-	output = query_lm(messages)
-    print("LM output", output)
+	lm_output = query_lm(messages)
+    print("LM output", lm_output)
 	messages.append({"role": "assistant", "content": lm_output})  # remember what the LM said
 	action = parse_action(lm_output)  # separate the action from output
     print("Action", action)
