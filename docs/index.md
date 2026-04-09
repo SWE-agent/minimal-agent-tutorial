@@ -26,7 +26,7 @@ Pseudocode:
 messages = [{"role": "user", "content": "Help me fix the ValueError in main.py"}]
 while True:
 	lm_output = query_lm(messages)
-    print("LM output", output)
+    print("LM output", lm_output)
 	messages.append({"role": "assistant", "content": lm_output})  # remember what the LM said
 	action = parse_action(lm_output)  # separate the action from output
     print("Action", action)
@@ -611,7 +611,7 @@ class Environment:
 ```
 
 `mini-swe-agent` provides different environment classes that for example allow to execute actions in docker containers instead of directly in your local environment.
-Sonds more complicated? It really isn't: all we do is switch from `subprocess.run` to calls to `docker exec`.
+Sounds more complicated? It really isn't: all we do is switch from `subprocess.run` to calls to `docker exec`.
 
 ## Contribute to this guide
 
