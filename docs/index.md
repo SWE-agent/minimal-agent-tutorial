@@ -611,7 +611,7 @@ class Environment:
 ```
 
 `mini-swe-agent` provides different environment classes that for example allow to execute actions in docker containers instead of directly in your local environment.
-Sonds more complicated? It really isn't: all we do is switch from `subprocess.run` to calls to `docker exec`.
+Sounds more complicated? It really isn't: all we do is switch from `subprocess.run` to calls to `docker exec`.
 
 ## Contribute to this guide
 
