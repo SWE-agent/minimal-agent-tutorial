@@ -551,7 +551,7 @@ def parse_action(action: str) -> str:
 ### Environment variables
 
 There's a couple of environment variables that we can set to disable interactive
-elements in command line tools that avoid the agent getting stuck (you can see them being set in the [`mini-swe-agent` SWE-bench config](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/config/extra/swebench.yaml)):
+elements in command line tools that avoid the agent getting stuck (you can see them being set in the [`mini-swe-agent` SWE-bench config](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/config/benchmarks/swebench.yaml)):
 
 ```python
 env_vars = {
