@@ -18,7 +18,7 @@ Using this simple guide you can score up to 74% on [SWE-bench verified](https://
 ## Our first prototype in 50 lines
 
 Let's get started: From a top level view, an AI agent is just a big loop: You start with a prompt, the agent proposes an action, you execute the action, tell the LM the output, and then repeat.
-To keep track of what have happend we continue to append to the `messages` list.
+To keep track of what has happened we continue to append to the `messages` list.
 
 Pseudocode:
 
@@ -50,7 +50,7 @@ while True:
 So to get this to work, we only need to implement three things:
 
 1. Querying the LM API (this can get annoying if you want to support all LMs, or want detailed cost information, but is very simple if you already know which model you want)
-2. Parsing the action (`parse_action`). You don't need this if you use the tool calling functionality of your LM if it supports it, but this is more provider-specific, so we wo'nt cover it in this guide for now (don't worry, the performance should not be impacted by this).
+2. Parsing the action (`parse_action`). You don't need this if you use the tool calling functionality of your LM if it supports it, but this is more provider-specific, so we won't cover it in this guide for now (don't worry, the performance should not be impacted by this).
 3. Executing the action (very simple, in our case we will simply execute any action of the LM as a bash-command in the terminal).
 
 ### Querying the LM
@@ -486,7 +486,7 @@ def execute_action(action: str) -> str:
     try:
         # as before
     except TimeoutError as e:
-        raise OurTimeoutError("Your last command time out, you might want to ...") from e
+        raise OurTimeoutError("Your last command timed out, you might want to ...") from e
 ```
 
 and just like this, we've added additional information for the LM.
@@ -527,12 +527,12 @@ while True:
 
 ### Handling malformatted outputs
 
-Sometimes (especially with weaker LMs), the LM will not properly format it's action.
+Sometimes (especially with weaker LMs), the LM will not properly format its action.
 It's good to remind it about the correct way in that case:
 This should be very straightforward now that we have the general exception handling in place:
 
 ````python
-incorrect_format_message = """Your output was malformated.
+incorrect_format_message = """Your output was malformatted.
 Please include exactly 1 action formatted as in the following example:
 
 ```bash-action
@@ -577,7 +577,7 @@ def execute_action(command: str) -> str:
 
 ## mini-swe-agent
 
-[`mini-swe-agent`](https://github.com/swe-agent/mini-swe-agent) is built exactly according to the blueprint of this tutorial and it should be very easy for you to understand it's source code.
+[`mini-swe-agent`](https://github.com/swe-agent/mini-swe-agent) is built exactly according to the blueprint of this tutorial and it should be very easy for you to understand its source code.
 The only important thing to note is that it is built more modular, so that you can swap out all components.
 
 The `Agent` class ([full code](https://github.com/swe-agent/mini-swe-agent/blob/main/src/minisweagent/agents/default.py)) contains the big `while` loop in the `run` function
@@ -611,7 +611,7 @@ class Environment:
 ```
 
 `mini-swe-agent` provides different environment classes that for example allow to execute actions in docker containers instead of directly in your local environment.
-Sonds more complicated? It really isn't: all we do is switch from `subprocess.run` to calls to `docker exec`.
+Sounds more complicated? It really isn't: all we do is switch from `subprocess.run` to calls to `docker exec`.
 
 ## Contribute to this guide
 
@@ -626,7 +626,7 @@ We welcome contributions [on GitHub](https://github.com/swe-agent/minimal-agent-
 
     The following PRs are much appreciated and will most likely be merged fast:
 
-    - Adding support to popular LMs that aren't mentioned yet (please make sure test your implementation)
+    - Adding support to popular LMs that aren't mentioned yet (please make sure to test your implementation)
 
     The following things should be discussed first (via github issue):
 
